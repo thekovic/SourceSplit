@@ -80,7 +80,8 @@ namespace LiveSplit.SourceSplit
 
         public override void WriteLine(string message)
         {
-            base.WriteLine("SourceSplit: " + this.UpdateCount + " " + this.TickCount + " " + message);
+            //base.WriteLine("SourceSplit: " + this.UpdateCount + " " + this.TickCount + " " + message);
+            SourceSplitComponent.Console.AddText("SourceSplit: " + this.UpdateCount + " " + this.TickCount + " " + message);
         }
     }
 }

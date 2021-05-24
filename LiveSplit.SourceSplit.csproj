@@ -43,6 +43,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -52,6 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugConsole.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugConsole.Designer.cs">
+      <DependentUpon>DebugConsole.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameSpecific\ApertureTag.cs" />
     <Compile Include="GameSpecific\BMSRetail.cs" />
     <Compile Include="GameSpecific\GameSupport.cs" />
@@ -85,6 +92,9 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DebugConsole.resx">
+      <DependentUpon>DebugConsole.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapTimesForm.resx">
       <DependentUpon>MapTimesForm.cs</DependentUpon>
     </EmbeddedResource>

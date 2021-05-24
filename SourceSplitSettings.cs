@@ -27,6 +27,7 @@ namespace LiveSplit.SourceSplit
         public AutoSplitType AutoSplitType { get; private set; }
         public bool ShowGameTime { get; set; }
         public bool AutoStartEndResetEnabled { get; set; }
+        public bool LoadPenaltyEnabled { get; set; }
 
         public string[] MapWhitelist => GetListboxValues(this.lbMapWhitelist);
         public string[] MapBlacklist => GetListboxValues(this.lbMapBlacklist);
@@ -82,7 +83,9 @@ namespace LiveSplit.SourceSplit
         public SourceSplitSettings()
         {
             this.InitializeComponent();
-            
+
+            this.checkBox1.DataBindings.Add("Checked", this, nameof(this.LoadPenaltyEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+
             this.chkAutoSplitEnabled.DataBindings.Add("Checked", this, nameof(this.AutoSplitEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
             this.dmnSplitInterval.DataBindings.Add("Value", this, nameof(this.SplitInterval), false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkShowGameTime.DataBindings.Add("Checked", this, nameof(this.ShowGameTime), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -250,6 +253,11 @@ namespace LiveSplit.SourceSplit
         void btnShowMapTimes_Click(object sender, EventArgs e)
         {
             MapTimesForm.Instance.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SourceSplitComponent.Console.Show();
         }
     }
 }

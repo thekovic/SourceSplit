@@ -287,7 +287,9 @@ namespace LiveSplit.SourceSplit
                 try
                 {
                     Debug.WriteLine("Waiting for process");
-
+                    Debug.WriteLine("target processes");
+                    foreach (string text in _settings.GameProcesses)
+                        Debug.WriteLine(text);
                     Process game;
                     GameOffsets offsets;
                     while (!this.TryGetGameProcess(out game, out offsets))

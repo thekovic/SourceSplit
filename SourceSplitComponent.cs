@@ -18,6 +18,7 @@ namespace LiveSplit.SourceSplit
         public string ComponentName => "SourceSplit";
 
         public SourceSplitSettings Settings { get; set; }
+        public static DebugConsole Console { get; set; }
         public IDictionary<string, Action> ContextMenuControls { get; protected set; }
         protected InfoTimeComponent InternalComponent { get; set; }
 
@@ -37,6 +38,7 @@ namespace LiveSplit.SourceSplit
         private DateTime? _gamePauseTime;
         private int _gamePauseTick;
         private GameTimingMethod _gameRecommendedTimingMethod;
+        private float _loadPenalty;
 
         private bool _waitingForDelay;
 
@@ -66,11 +68,11 @@ namespace LiveSplit.SourceSplit
             {
                 if (_gamePauseTime != null && this.GameTimingMethod == GameTimingMethod.EngineTicksWithPauses)
                 {
-                    return TimeSpan.FromSeconds((_totalTicks + _gamePauseTick + FakeTicks(_gamePauseTime.Value, DateTime.Now) - _sessionTicksOffset) * _intervalPerTick);
+                    return TimeSpan.FromSeconds((_totalTicks + _gamePauseTick + FakeTicks(_gamePauseTime.Value, DateTime.Now) - _sessionTicksOffset) * _intervalPerTick + _loadPenalty);
                 }
                 else
                 {
-                    return TimeSpan.FromSeconds((_totalTicks + _sessionTicks - _sessionTicksOffset) * _intervalPerTick);
+                    return TimeSpan.FromSeconds((_totalTicks + _sessionTicks - _sessionTicksOffset) * _intervalPerTick + _loadPenalty);
                 }
             }
         }
@@ -84,6 +86,9 @@ namespace LiveSplit.SourceSplit
             Trace.Listeners.Clear();
             Trace.Listeners.Add(TimedTraceListener.Instance);
 #endif
+
+            SourceSplitComponent.Console = new DebugConsole();
+            SourceSplitComponent.Console.Show();
 
             this.IsLayoutComponent = isLayoutComponent;
 
@@ -201,6 +206,7 @@ namespace LiveSplit.SourceSplit
 
         void state_OnStart(object sender, EventArgs e)
         {
+            _loadPenalty = 0f;
             _timer.InitializeGameTime();
             _totalTicks = 0;
             _mapsVisited.Clear();
@@ -267,6 +273,9 @@ namespace LiveSplit.SourceSplit
         void gameMemory_OnSessionEnded(object sender, EventArgs e)
         {
             Debug.WriteLine("session ended, total time was " + TimeSpan.FromSeconds((_sessionTicks - _sessionTicksOffset) * _intervalPerTick));
+
+            if (Settings.LoadPenaltyEnabled)
+                _loadPenalty += 0.5f;
 
             if (_gamePauseTime != null && this.GameTimingMethod == GameTimingMethod.EngineTicksWithPauses)
             {
